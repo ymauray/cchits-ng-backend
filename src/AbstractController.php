@@ -13,19 +13,19 @@ abstract class AbstractController
     /**
      * Invocable.
      * 
-     * @param $request  the request.
-     * @param $response the response.
-     * @param $args     the args.
+     * @param Request       $request  the request.
+     * @param Response      $response the response.
+     * @param array<string> $args     the args.
      * 
-     * @return an instance of Response.
+     * @return Response
      */
     public function __invoke(
         Request $request, Response $response, array $args = array()
     ): Response {
         \session_start();
         $parsedBody = $request->getParsedBody();
-        $action = $parsedBody->action;
-        $data = $parsedBody->data;
+        $action = $parsedBody->action; // @phpstan-ignore-line
+        $data = $parsedBody->data; // @phpstan-ignore-line
 
         $class = new \ReflectionClass($this);
 

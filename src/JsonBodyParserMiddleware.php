@@ -15,17 +15,20 @@ class JsonBodyParserMiddleware implements MiddlewareInterface
     /**
      * Parse the request's body if Content-Type is set to json.
      *
-     * @param $request the request.
-     * @param $handler the handler.
+     * @param Request        $request the request.
+     * @param RequestHandler $handler the handler.
      * 
-     * @return a Response object.
+     * @return Response
      */
     public function process(Request $request, RequestHandler $handler): Response
     {
         $contentType = $request->getHeaderLine('Content-Type');
 
         if (strstr($contentType, 'application/json')) {
-            $contents = json_decode(file_get_contents('php://input'), true);
+            $contents = file_get_contents('php://input');
+            if (false != $contents) {
+                $contents = json_decode($contents, true);
+            }
             if (json_last_error() === JSON_ERROR_NONE) {
                 $request = $request->withParsedBody(
                     $this->_arrayToObject($contents)
@@ -39,9 +42,9 @@ class JsonBodyParserMiddleware implements MiddlewareInterface
     /**
      * Convert an associative array to an instance of stdClass.
      * 
-     * @param $array the array to convert
+     * @param array<string, mixed> $array the array to convert
      * 
-     * @return \stdClass;
+     * @return \stdClass
      */
     private function _arrayToObject(array $array)
     {
@@ -52,8 +55,8 @@ class JsonBodyParserMiddleware implements MiddlewareInterface
     /**
      * Convert an associative array to an instance of stdClass.
      * 
-     * @param $array the array to convert
-     * @param $obj   the object to store the properties in.
+     * @param array<string, mixed> $array the array to convert
+     * @param \stdClass            $obj   the object to store the properties in.
      * 
      * @return \stdClass
      */

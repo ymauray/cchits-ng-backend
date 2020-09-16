@@ -7,7 +7,7 @@ namespace CCHits\Config;
  */
 class Config
 {
-    public $openIdStore;
+    public string $openIdStore;
     
     /**
      * Constructor.

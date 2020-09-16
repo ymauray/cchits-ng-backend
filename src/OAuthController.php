@@ -19,7 +19,7 @@ class OAuthController extends AbstractController
     /**
      * Constructor.
      * 
-     * @param $openIdService The OpenIDService injected by the DI container.
+     * @param OpenIDService $openIdService The OpenIDService
      */
     public function __construct(OpenIDService $openIdService)
     {
@@ -29,10 +29,10 @@ class OAuthController extends AbstractController
     /**
      * Get the OAuth service endpoint.
      * 
-     * @param $request  the request
-     * @param $response the response
-     * @param $data     the data
-     * @param $args     the args
+     * @param Request       $request  the request
+     * @param Response      $response the response
+     * @param \stdClass     $data     the data
+     * @param array<string> $args     the args
      * 
      * @return Response
      */
@@ -40,7 +40,7 @@ class OAuthController extends AbstractController
         Request $request, Response $response, \stdClass $data, array $args
     ): Response {
 
-        if (false === \session_id()) {
+        if (false == \session_id()) {
             \session_start();
         }
 
@@ -61,7 +61,10 @@ class OAuthController extends AbstractController
 
         $url = $auth = $this->_openIdService->begin($endpoint);
 
-        $response->getBody()->write(json_encode(['url' => $url]));
+        $json = json_encode(['url' => $url]);
+        if (false != $json) {
+            $response->getBody()->write($json);
+        }
         return $response->withHeader('Content-Type', 'application/json');
     }
 }

@@ -11,8 +11,6 @@ use Auth_OpenID_AuthRequest;
 
 use CCHits\Config\Config;
 
-define('Auth_OpenID_RAND_SOURCE', null);
-
 /**
  * OpenID service.
  */
@@ -23,39 +21,46 @@ class OpenIDService
     /**
      * Constructor.
      * 
-     * @param $config Injected instance of Configuration.
+     * @param Config $config Injected instance of Configuration.
      */
     public function __construct(Config $config)
     {
         $store = new Auth_OpenID_FileStore($config->openIdStore);
-        $this->consumer = new Auth_OpenID_Consumer($store);
+        $this->_consumer = new Auth_OpenID_Consumer($store);
     }
 
     /**
      * Begin OpenID authentication process.
      * 
+     * @param string $endpoint The oAuth endpoint.
+     *
      * @return string
      */
-    public function begin($endpoint) : string 
+    public function begin(string $endpoint) : string 
     {
         /* @var $auth Auth_OpenID_AuthRequest */
-        $auth = $this->consumer->begin($endpoint);
-        if (!$auth) {
+        $auth = $this->_consumer->begin($endpoint);
+        if (null == $auth) {
             // Fail properly...
         }
 
         $ax = new Auth_OpenID_AX_FetchRequest();
         $ax->add(
             Auth_OpenID_AX_AttrInfo::make(
-                'http://axschema.org/contact/email', 1, 1, 'email'
+                'http://axschema.org/contact/email', 1, true, 'email'
             )
         );
         $auth->addExtension($ax);
 
+        /* @phpstan-ignore-next-line */
         $sreg_request = Auth_OpenID_SRegRequest::build(array(), ['email']);
+        /* @phpstan-ignore-next-line */
         $auth->addExtension($sreg_request);
 
-        $url = $auth->redirectURL('http://localhost:4200/admin', 'http://localhost:4200/admin' . '?return=1');
+        $url = $auth->redirectURL(
+            'http://localhost:4200/admin', 
+            'http://localhost:4200/admin' . '?return=1'
+        );
 
         return $url;
     }

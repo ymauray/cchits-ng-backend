@@ -1,6 +1,10 @@
 <?php
 require_once 'vendor/autoload.php';
 
+// @codingStandardsIgnoreStart
+define('Auth_OpenID_RAND_SOURCE', null);
+// @codingStandardsIgnoreEnd
+
 use DI\Container;
 use DI\Bridge\Slim\Bridge;
 use Psr\Http\Message\ResponseInterface as Response;
