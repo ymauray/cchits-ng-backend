@@ -22,5 +22,9 @@
         "psr-4": {
             "CCHits\\": "src/"
         }
+    },
+    "scripts": {
+        "phpstan": "vendor/bin/phpstan analyse",
+        "phpcs": "vendor/bin/phpcs"
     }
 }
